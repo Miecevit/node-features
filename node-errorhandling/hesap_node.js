@@ -16,7 +16,7 @@ const server = http.createServer((req,res) =>{
     const pathname = url.parse(req.url, true);
 
     if(req.method === 'GET' && pathname === '/'){
-        fs.readFile('./hesap.html', (err, data) => {
+        fs.readFile('hesap.html', (err, data) => {
             if(err){
                 res.writeHead(500, {'Content-Type':'text/plain'});
                 res.end('Server tarafinda bir hata oluştu.');
@@ -40,13 +40,26 @@ const server = http.createServer((req,res) =>{
 
                 const { bolunen, bolen } = JSON.parse(body);
 
-                
+                try{
 
-            })
+                    const sonuc = sayiBol(parseFloat(bolen), parseFloat(bolunen));
+                    res.writeHead(200, {'Content-Type':'application/json'});
+                    res.end(JSON.stringify({sonuc}));
 
+                }catch{
 
+                    res.writeHead(400, {'Content-Type':'application/json'});
+                    res.end(JSON.stringify({error: error.message}));
 
+                }
+            });
+        } else{
+            res.writeHead(404, {'Content-Type':'text/plain'});
+            res.end('Bulunamadi.');
         }
-    })
+    });
 
 
+server.listen(3000, () => {
+    console.log("Server calisiyor. Port: 3000");
+});
